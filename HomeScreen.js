@@ -8,19 +8,19 @@ export default function HomeScreen({ navigation }) {
       <Text style={styles.title}>CPS Test</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('Result', { seconds: 1 })}
+        onPress={() => navigation.navigate('Game', { seconds: 1 })}
       >
         <Text style={styles.buttonText}>1 Second</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Result', { seconds: 5 })}
+        style={[styles.button, {backgroundColor: '#ff9500'}]}
+        onPress={() => navigation.navigate('Game', { seconds: 5 })}
       >
         <Text style={styles.buttonText}>5 Seconds</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.button, {backgroundColor: '#ff3b30'}]}
-        onPress={() => navigation.navigate('Result', { seconds: 60 })}
+        onPress={() => navigation.navigate('Game', { seconds: 60 })}
       >
         <Text style={styles.buttonText}>60 Seconds</Text>
       </TouchableOpacity>
