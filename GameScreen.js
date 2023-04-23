@@ -6,27 +6,29 @@ export default function GameScreen({ route, navigation }) {
   const [taps, setTaps] = useState(0);
   const [timeLeft, setTimeLeft] = useState(seconds);
   const [gameStarted, setGameStarted] = useState(false);
+  const [startTime, setStartTime] = useState(Date.now());
 
   useEffect(() => {
-    let interval;
     if (gameStarted) {
-      interval = setInterval(() => {
+
+      setTimeout(() => {
         if (gameStarted && timeLeft > 0) {
-          setTimeLeft(Number((timeLeft - 0.1).toFixed(1)));
+          console.log(Date.now() - startTime, Date.now(), startTime);
+          setTimeLeft(Number(seconds - Number(((Date.now() - startTime) / 1000).toFixed(1))).toFixed(1));
         } else if (timeLeft <= 0) {
           setGameStarted(false);
           setTaps(0);
           // Navigate to Result Screen
-          navigation.navigate('Result', { cps: taps / seconds });
+          navigation.navigate('Result', { cps: taps / seconds, seconds });
         }
       }, 100);
     }
-    return () => clearInterval(interval);
   }, [timeLeft, gameStarted]);
 
   const handleTap = () => {
     if (!gameStarted) {
     setGameStarted(true);
+    setStartTime(Date.now());
     setTimeLeft(seconds);
     setTaps(0);
   } else setTaps(taps + 1);
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     width: '90%',
-    height: Dimensions.get('window').height - 500,
+    height: Dimensions.get('window').height - 300,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
