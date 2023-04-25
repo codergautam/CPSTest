@@ -1,28 +1,95 @@
-import { StatusBar } from 'expo-status-bar';
-import { Text, View, TouchableOpacity } from 'react-native';
-import styles from './styles';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 
-export default function ResultScreen({ route, navigation }) {
+const ResultScreen = ({ route, navigation }) => {
 const { cps, seconds } = route.params;
+const [timeReached, setTimeReached] = useState(Date.now());
+
+useEffect(() => {
+  setTimeReached(Date.now());
+}, []);
 
 return (
-<View style={styles.container}>
-<Text style={styles.title}>Results</Text>
-<Text style={styles.resultText}>{seconds} second{seconds > 1 ? 's' : ''} test</Text>
-<Text style={styles.resultText}>Your CPS: {cps.toFixed(2)}</Text>
+<View style={container}>
+<Text style={title}>Results</Text>
+<Text style={resultText}>You clicked {cps.toFixed(2)} times per second in {seconds} seconds!</Text>
+<View style={buttonsContainer}>
 <TouchableOpacity
-style={styles.button}
-onPress={() => navigation.navigate('Game', { seconds: seconds })}
+style={[button, playAgainButton]}
+onPress={() =>
+  Date.now() - timeReached > 300 ? navigation.navigate('Game', { seconds: seconds }) : null
+}
 >
-<Text style={styles.buttonText}>Play Again</Text>
+<Text style={[buttonText, playAgainButtonText]}>Play Again</Text>
 </TouchableOpacity>
 <TouchableOpacity
-style={styles.button}
-onPress={() => navigation.navigate('Home')}
+style={[button, homeButton]}
+onPress={() => Date.now() - timeReached > 300 ?  navigation.navigate('Home') : null}
 >
-<Text style={styles.buttonText}>Home</Text>
+<Text style={[buttonText, homeButtonText]}>Home</Text>
 </TouchableOpacity>
-<StatusBar style="auto" />
+</View>
 </View>
 );
-}
+};
+
+const container = {
+  flex: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '#f5f5f5',
+  paddingHorizontal: 20,
+};
+
+const title = {
+  fontSize: 36,
+  fontWeight: 'bold',
+  marginBottom: 20,
+  color: '#2d2d2d',
+};
+
+const resultText = {
+  fontSize: 24,
+  textAlign: 'center',
+  marginBottom: 30,
+  color: '#2d2d2d',
+};
+
+const buttonsContainer = {
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  alignItems: 'stretch',
+  width: '100%',
+  paddingHorizontal: 20,
+};
+
+const button = {
+  padding: 15,
+  borderRadius: 10,
+  alignItems: 'center',
+  marginBottom: 10,
+};
+
+const playAgainButton = {
+  backgroundColor: '#2d2d2d',
+};
+
+const homeButton = {
+  backgroundColor: '#5f5f5f',
+};
+
+const buttonText = {
+  fontSize: 18,
+  fontWeight: 'bold',
+  color: '#f5f5f5',
+};
+
+const playAgainButtonText = {
+  color: '#f5f5f5',
+};
+
+const homeButtonText = {
+  color: '#f5f5f5',
+};
+
+export default ResultScreen;

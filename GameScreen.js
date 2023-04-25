@@ -50,8 +50,8 @@ export default function GameScreen({ route, navigation }) {
       { gameStarted && taps > 0 ?
       <Text style={styles.resultLabel}>CPS: {(taps / (seconds-timeLeft)).toFixed(1)}</Text>
       : null }
-      <TouchableOpacity style={styles.tapButton} onPress={handleTap}>
-        <Text style={styles.tapButtonText}>Tap!</Text>
+      <TouchableOpacity style={gameStarted ? styles.tapButton : [styles.tapButton, {backgroundColor: '#234F1E'}]} onPress={handleTap}>
+        <Text style={styles.tapButtonText}>{gameStarted ? 'Tap!' : 'Start!'}</Text>
       </TouchableOpacity>
     </View>
   );
