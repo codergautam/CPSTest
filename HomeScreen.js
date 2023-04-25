@@ -6,6 +6,7 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>CPS Test</Text>
+      <Text style={styles.subtitle}>How <Text style={{color: "red"}}>fast</Text> can you tap?</Text>
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate('Game', { seconds: 1 })}

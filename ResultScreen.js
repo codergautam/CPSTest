@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import PureChart from 'react-native-pure-chart';
 
 const ResultScreen = ({ route, navigation }) => {
-const { cps, seconds } = route.params;
+const { cps, seconds, clicks, history } = route.params;
 const [timeReached, setTimeReached] = useState(Date.now());
 
 useEffect(() => {
   setTimeReached(Date.now());
 }, []);
 
+console.log(history);
+
 return (
 <View style={container}>
 <Text style={title}>Results</Text>
-<Text style={resultText}>You clicked {cps.toFixed(2)} times per second in {seconds} seconds!</Text>
+<Text style={resultText}>You clicked {clicks} times in {seconds} seconds!</Text>
+<Text style={resultText}>Your CPS: {cps.toFixed(2)}</Text>
+
 <View style={buttonsContainer}>
+<PureChart data={history} type='line' gap='20' />
+
 <TouchableOpacity
 style={[button, playAgainButton]}
 onPress={() =>

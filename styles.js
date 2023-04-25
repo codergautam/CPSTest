@@ -10,6 +10,12 @@ export default StyleSheet.create({
   title: {
     fontSize: 50,
     fontWeight: 'bold',
+    marginBottom: 0,
+    color: '#2d2d2d',
+  },
+  subtitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 20,
   },
   button: {

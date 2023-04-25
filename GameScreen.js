@@ -7,6 +7,7 @@ export default function GameScreen({ route, navigation }) {
   const [timeLeft, setTimeLeft] = useState(seconds);
   const [gameStarted, setGameStarted] = useState(false);
   const [startTime, setStartTime] = useState(Date.now());
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     if (gameStarted) {
@@ -15,11 +16,14 @@ export default function GameScreen({ route, navigation }) {
         if (gameStarted && timeLeft > 0) {
           console.log(Date.now() - startTime, Date.now(), startTime);
           setTimeLeft(Number(seconds - Number(((Date.now() - startTime) / 1000).toFixed(1))).toFixed(1));
+          if(timeLeft > 0 && seconds-timeLeft > 0) {
+          setHistory([...history, Number((taps / (seconds-timeLeft)).toFixed(1))]);
+          }
         } else if (timeLeft <= 0) {
           setGameStarted(false);
           setTaps(0);
           // Navigate to Result Screen
-          navigation.navigate('Result', { cps: taps / seconds, seconds });
+          navigation.navigate('Result', { cps: taps / seconds, seconds, clicks: taps, history: [...history,  Number(taps / seconds.toFixed(1))] });
         }
       }, 100);
     }
@@ -31,7 +35,8 @@ export default function GameScreen({ route, navigation }) {
     setStartTime(Date.now());
     setTimeLeft(seconds);
     setTaps(0);
-  } else setTaps(taps + 1);
+    setHistory([]);
+  } else if(timeLeft > 0) setTaps(taps + 1);
   };
 
 
@@ -39,7 +44,7 @@ export default function GameScreen({ route, navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Tap as many times as you can!</Text>
       <View style={styles.timerContainer}>
-        <Text style={styles.timer}>{timeLeft}</Text>
+        <Text style={styles.timer}>{Math.max(timeLeft, 0)}</Text>
         <Text style={styles.timerLabel}>Seconds Left</Text>
       </View>
       <View style={styles.resultContainer}>
