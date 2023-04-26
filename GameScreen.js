@@ -17,13 +17,20 @@ export default function GameScreen({ route, navigation }) {
           console.log(Date.now() - startTime, Date.now(), startTime);
           setTimeLeft(Number(seconds - Number(((Date.now() - startTime) / 1000).toFixed(1))).toFixed(1));
           if(timeLeft > 0 && seconds-timeLeft > 0) {
-          setHistory([...history, Number((taps / (seconds-timeLeft)).toFixed(1))]);
+            if(seconds < 30) {
+          setHistory([...history, {x: (seconds-timeLeft).toFixed(1), y: Number((taps / (seconds-timeLeft)).toFixed(1))}]);
+            } else {
+              // only update once every 2 secs
+              if((seconds-timeLeft) % 2 === 0) {
+                setHistory([...history, {x: (seconds-timeLeft).toFixed(1), y: Number((taps / (seconds-timeLeft)).toFixed(1))}]);
+              }
           }
+        }
         } else if (timeLeft <= 0) {
           setGameStarted(false);
           setTaps(0);
           // Navigate to Result Screen
-          navigation.navigate('Result', { cps: taps / seconds, seconds, clicks: taps, history: [...history,  Number(taps / seconds.toFixed(1))] });
+          navigation.navigate('Result', { cps: taps / seconds, seconds, clicks: taps, history: [...history,  {x: seconds, y: Number(taps / seconds.toFixed(1))}] });
         }
       }, 100);
     }

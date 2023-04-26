@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
 import PureChart from 'react-native-pure-chart';
 
 const ResultScreen = ({ route, navigation }) => {
@@ -18,9 +18,9 @@ return (
 <Text style={resultText}>You clicked {clicks} times in {seconds} seconds!</Text>
 <Text style={resultText}>Your CPS: {cps.toFixed(2)}</Text>
 
-<View style={buttonsContainer}>
-<PureChart data={history} type='line' gap='20' />
+<PureChart data={history} type='line' gap={(Dimensions.get('window').width - 120) / history.length} />
 
+<View style={buttonsContainer}>
 <TouchableOpacity
 style={[button, playAgainButton]}
 onPress={() =>
