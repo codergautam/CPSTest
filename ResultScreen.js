@@ -1,22 +1,68 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
 import PureChart from 'react-native-pure-chart';
+import * as SecureStore from 'expo-secure-store';
 
-const ResultScreen = ({ route, navigation }) => {
+
+const ResultScreen =  ({ route, navigation }) => {
 const { cps, seconds, clicks, history } = route.params;
 const [timeReached, setTimeReached] = useState(Date.now());
+const [highScoreText, setHighScoreText] = useState("");
 
 useEffect(() => {
   setTimeReached(Date.now());
 }, []);
 
-console.log(history);
+
+const handleSave = async () => {
+  try {
+    const value = await  SecureStore.getItemAsync('highscores');
+    if (value !== null) {
+      let returnval = `Your personal best for this mode: ${JSON.parse(value)[seconds+"seconds"]} CPS`
+      // value previously stored
+      const parsedValue = JSON.parse(value);
+      if(parsedValue[seconds+"seconds"] === undefined) {
+        parsedValue[seconds+"seconds"] = cps;
+        returnval = `NEW PERSONAL BEST!`
+      } else {
+        if(Number(parsedValue[seconds+"seconds"]) < cps) {
+          parsedValue[seconds+"seconds"] = cps;
+          returnval = `NEW PERSONAL BEST!`
+        }
+      }
+      await SecureStore.setItemAsync('highscores', JSON.stringify(parsedValue));
+      return returnval;
+    } else {
+      const newHighscore = {};
+      newHighscore[seconds+"seconds"] = cps;
+      await SecureStore.setItemAsync('highscores', JSON.stringify(newHighscore));
+      return `Score saved!`
+    }
+  } catch (error) {
+    // Error saving data
+    console.log(error);
+    return "";
+  }
+};
+
+
+
+
+useEffect(() => {
+  const unsubscribe = navigation.addListener('focus', () => {
+      handleSave().then((res) => {
+        setHighScoreText(res);
+      });
+  });
+  return unsubscribe;
+}, [navigation]);
 
 return (
 <View style={container}>
 <Text style={title}>Results</Text>
 <Text style={resultText}>You clicked {clicks} times in {seconds} seconds!</Text>
 <Text style={resultText}>Your CPS: {cps.toFixed(2)}</Text>
+<Text style={resultText}>{highScoreText}</Text>
 
 <PureChart data={history} type='line' gap={(Dimensions.get('window').width - 120) / history.length} />
 
@@ -24,14 +70,14 @@ return (
 <TouchableOpacity
 style={[button, playAgainButton]}
 onPress={() =>
-  Date.now() - timeReached > 300 ? navigation.navigate('Game', { seconds: seconds }) : null
+  Date.now() - timeReached > 1000 ? navigation.navigate('Game', { seconds: seconds }) : null
 }
 >
 <Text style={[buttonText, playAgainButtonText]}>Play Again</Text>
 </TouchableOpacity>
 <TouchableOpacity
 style={[button, homeButton]}
-onPress={() => Date.now() - timeReached > 300 ?  navigation.navigate('Home') : null}
+onPress={() => Date.now() - timeReached > 1000 ?  navigation.navigate('Home') : null}
 >
 <Text style={[buttonText, homeButtonText]}>Home</Text>
 </TouchableOpacity>

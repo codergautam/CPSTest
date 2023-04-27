@@ -10,11 +10,22 @@ export default function GameScreen({ route, navigation }) {
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+        // do something
+        setTaps(0);
+        setTimeLeft(seconds);
+        setGameStarted(false);
+        setStartTime(Date.now());
+        setHistory([]);
+    });
+    return unsubscribe;
+}, [navigation]);
+
+  useEffect(() => {
     if (gameStarted) {
 
       setTimeout(() => {
         if (gameStarted && timeLeft > 0) {
-          console.log(Date.now() - startTime, Date.now(), startTime);
           setTimeLeft(Number(seconds - Number(((Date.now() - startTime) / 1000).toFixed(1))).toFixed(1));
           if(timeLeft > 0 && seconds-timeLeft > 0) {
             if(seconds < 30) {
@@ -41,8 +52,9 @@ export default function GameScreen({ route, navigation }) {
     setGameStarted(true);
     setStartTime(Date.now());
     setTimeLeft(seconds);
-    setTaps(0);
+    setTaps(1);
     setHistory([]);
+
   } else if(timeLeft > 0) setTaps(taps + 1);
   };
 
@@ -59,10 +71,10 @@ export default function GameScreen({ route, navigation }) {
         <Text style={styles.resultCount}>{taps}</Text>
 
       </View>
-      { gameStarted && taps > 0 ?
+      { gameStarted && taps > 0 && (seconds - timeLeft) > 0 ?
       <Text style={styles.resultLabel}>CPS: {(taps / (seconds-timeLeft)).toFixed(1)}</Text>
       : null }
-      <TouchableOpacity style={gameStarted ? styles.tapButton : [styles.tapButton, {backgroundColor: '#234F1E'}]} onPress={handleTap}>
+      <TouchableOpacity style={gameStarted ? styles.tapButton : [styles.tapButton, {backgroundColor: '#234F1E'}]} onPress={handleTap} disabled={timeLeft <= 0}>
         <Text style={styles.tapButtonText}>{gameStarted ? 'Tap!' : 'Start!'}</Text>
       </TouchableOpacity>
     </View>
