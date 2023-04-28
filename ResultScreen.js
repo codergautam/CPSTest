@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
 import PureChart from 'react-native-pure-chart';
 import * as SecureStore from 'expo-secure-store';
 
+const adUnitId = TestIds.BANNER;
 
 const ResultScreen =  ({ route, navigation }) => {
 const { cps, seconds, clicks, history } = route.params;
@@ -59,6 +60,10 @@ useEffect(() => {
 
 return (
 <View style={container}>
+<BannerAd
+        unitId={adUnitId}
+        size={'320x100'}
+      />
 <Text style={title}>Results</Text>
 <Text style={resultText}>You clicked {clicks} times in {seconds} seconds!</Text>
 <Text style={resultText}>Your CPS: {cps.toFixed(2)}</Text>
