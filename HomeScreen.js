@@ -1,11 +1,60 @@
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Platform } from 'react-native';
 import styles from './styles';
-import { BannerAd, TestIds } from 'react-native-google-mobile-ads';
+import { AdEventType, BannerAd, InterstitialAd, TestIds } from 'react-native-google-mobile-ads';
+import { useEffect, useState } from 'react';
 
-const adUnitId = TestIds.BANNER;
 
-export default function HomeScreen({ navigation }) {
+// check if ios or android
+const adUnitId = Platform.OS == "android" ? "ca-app-pub-3340825671684972/8009602288" : "ca-app-pub-3340825671684972/2354553566"
+const adUnitIdInterstitial = Platform.OS == "android" ? "ca-app-pub-3340825671684972/3944350291" : "ca-app-pub-3340825671684972/4789145211"
+const interstitial = InterstitialAd.createForAdRequest(adUnitIdInterstitial, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ['fashion', 'clothing'],
+});
+export default function HomeScreen({ navigation, route }) {
+  const [loaded, setLoaded] = useState(false);
+  // useEffect(() => {
+  //   if(route.params?.fromResult) {
+  //   const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+  //     setLoaded(true);
+  //   });
+
+  //   // Start loading the interstitial straight away
+  //   interstitial.load();
+
+
+  //   // Unsubscribe from events on unmount
+  //   return unsubscribe;
+  //   }
+  // }, []);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setLoaded(false);
+        // do something
+        const unsubscribe2 = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+          setLoaded(true);
+        });
+
+        // Start loading the interstitial straight away
+        interstitial.load();
+
+
+        // Unsubscribe from events on unmount
+        return unsubscribe2;
+    });
+    return unsubscribe;
+}, [navigation]);
+  useEffect(() => {
+    if (loaded) {
+      try {
+        interstitial.show();
+        setLoaded(false);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [loaded]);
 
   return (
     <View style={styles.container}>

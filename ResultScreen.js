@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
 import PureChart from 'react-native-pure-chart';
 import * as SecureStore from 'expo-secure-store';
+import { BannerAd } from 'react-native-google-mobile-ads';
 
-const adUnitId = TestIds.BANNER;
+const adUnitId = Platform.OS == "android" ? "ca-app-pub-3340825671684972/8009602288" : "ca-app-pub-3340825671684972/2354553566"
+
 
 const ResultScreen =  ({ route, navigation }) => {
 const { cps, seconds, clicks, history } = route.params;
@@ -62,7 +64,7 @@ return (
 <View style={container}>
 <BannerAd
         unitId={adUnitId}
-        size={'320x100'}
+        size={'320x50'}
       />
 <Text style={title}>Results</Text>
 <Text style={resultText}>You clicked {clicks} times in {seconds} seconds!</Text>
@@ -82,7 +84,7 @@ onPress={() =>
 </TouchableOpacity>
 <TouchableOpacity
 style={[button, homeButton]}
-onPress={() => Date.now() - timeReached > 1000 ?  navigation.navigate('Home') : null}
+onPress={() => Date.now() - timeReached > 1000 ?  navigation.navigate('Home', {fromResult: true}) : null}
 >
 <Text style={[buttonText, homeButtonText]}>Home</Text>
 </TouchableOpacity>

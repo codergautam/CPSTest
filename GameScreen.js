@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native';
+import { BannerAd } from 'react-native-google-mobile-ads';
+const adUnitId = Platform.OS == "android" ? "ca-app-pub-3340825671684972/8009602288" : "ca-app-pub-3340825671684972/2354553566"
+
 
 export default function GameScreen({ route, navigation }) {
   const { seconds } = route.params;
@@ -61,6 +64,10 @@ export default function GameScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
+      <BannerAd
+        unitId={adUnitId}
+        size={'320x50'}
+      />
       <Text style={styles.title}>Tap as many times as you can!</Text>
       <View style={styles.timerContainer}>
         <Text style={styles.timer}>{Math.max(timeLeft, 0)}</Text>
@@ -85,12 +92,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingTop: 50,
+    paddingTop: 0,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 0,
+    paddingTop:20
   },
   timerContainer: {
     flexDirection: 'row',
