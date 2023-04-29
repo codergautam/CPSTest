@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     width: '90%',
-    height: Dimensions.get('window').height - 300,
+    height: Dimensions.get('window').height - 330,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   resultContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 5,
   },
   resultLabel: {
     fontSize: 24,

@@ -14,6 +14,8 @@ const interstitial = InterstitialAd.createForAdRequest(adUnitIdInterstitial, {
 });
 export default function HomeScreen({ navigation, route }) {
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const params = route.params;
   // useEffect(() => {
   //   if(route.params?.fromResult) {
   //   const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
@@ -35,9 +37,24 @@ export default function HomeScreen({ navigation, route }) {
         const unsubscribe2 = interstitial.addAdEventListener(AdEventType.LOADED, () => {
           setLoaded(true);
         });
+        // when interstitial is closed
+        interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+          setLoading(false);
+        });
+        // when failed to load
+        interstitial.addAdEventListener(AdEventType.ERROR, (error) => {
+          console.log(error);
+          setLoading(false);
+        });
+
+
 
         // Start loading the interstitial straight away
+        console.log(params)
+        if(params?.fromResult) {
         interstitial.load();
+        setLoading(true);
+        }
 
 
         // Unsubscribe from events on unmount
@@ -45,6 +62,7 @@ export default function HomeScreen({ navigation, route }) {
     });
     return unsubscribe;
 }, [navigation]);
+
   useEffect(() => {
     if (loaded) {
       try {
@@ -56,8 +74,14 @@ export default function HomeScreen({ navigation, route }) {
     }
   }, [loaded]);
 
+if(loading) return (
+  <View style={styles.container}>
+  <Text style={{color: "black"}}>Loading...</Text>
+  </View>
+)
+
   return (
-    <View style={styles.container}>
+        <View style={styles.container}>
       <Text style={styles.title}>CPS Test</Text>
       <Text style={styles.subtitle}>How <Text style={{color: "red"}}>fast</Text> can you tap?</Text>
       <TouchableOpacity
@@ -84,6 +108,6 @@ export default function HomeScreen({ navigation, route }) {
       />
       <StatusBar style="auto" />
     </View>
-  );
+  )
 }
 

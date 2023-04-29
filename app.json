@@ -27,7 +27,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.codergautamyt.CPSTest"
+      "package": "com.codergautamyt.CPSTest",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
