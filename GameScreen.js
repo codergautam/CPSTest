@@ -55,7 +55,7 @@ export default function GameScreen({ route, navigation }) {
     setGameStarted(true);
     setStartTime(Date.now());
     setTimeLeft(seconds);
-    setTaps(1);
+    setTaps(0);
     setHistory([]);
 
   } else if(timeLeft > 0) setTaps(taps + 1);
