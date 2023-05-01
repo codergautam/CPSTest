@@ -68,7 +68,7 @@ export default function GameScreen({ route, navigation }) {
         unitId={adUnitId}
         size={'320x50'}
       />
-      <Text style={styles.title}>Tap as many times as you can!</Text>
+      <Text style={styles.title}>Tap as fast as you can!</Text>
       <View style={styles.timerContainer}>
         <Text style={styles.timer}>{Math.max(timeLeft, 0)}</Text>
         <Text style={styles.timerLabel}>Seconds Left</Text>
