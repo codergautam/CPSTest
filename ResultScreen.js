@@ -19,6 +19,18 @@ useEffect(() => {
 
 const handleSave = async () => {
   try {
+    const history = await SecureStore.getItemAsync('history');
+    if (history !== null) {
+      // value previously stored
+      const parsedHistory = JSON.parse(history);
+      parsedHistory.push({seconds, cps, when: Date.now(), clicks});
+      await SecureStore.setItemAsync('history', JSON.stringify(parsedHistory));
+    } else {
+      const newHistory = [];
+      newHistory.push({seconds, cps, when: Date.now(), clicks});
+      await SecureStore.setItemAsync('history', JSON.stringify(newHistory));
+    }
+
     const value = await  SecureStore.getItemAsync('highscores');
     if (value !== null) {
       let returnval = `Your personal best for this mode: ${JSON.parse(value)[seconds+"seconds"]} CPS`

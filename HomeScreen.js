@@ -9,8 +9,6 @@ import { useEffect, useState } from 'react';
 const adUnitId = Platform.OS == "android" ? "ca-app-pub-3340825671684972/8009602288" : "ca-app-pub-3340825671684972/2354553566"
 const adUnitIdInterstitial = Platform.OS == "android" ? "ca-app-pub-3340825671684972/3944350291" : "ca-app-pub-3340825671684972/4789145211"
 const interstitial = InterstitialAd.createForAdRequest(adUnitIdInterstitial, {
-  requestNonPersonalizedAdsOnly: true,
-  keywords: ['fashion', 'clothing'],
 });
 export default function HomeScreen({ navigation, route }) {
   const [loaded, setLoaded] = useState(false);
@@ -24,7 +22,6 @@ export default function HomeScreen({ navigation, route }) {
 
   //   // Start loading the interstitial straight away
   //   interstitial.load();
-
 
   //   // Unsubscribe from events on unmount
   //   return unsubscribe;
@@ -102,6 +99,14 @@ if(loading) return (
       >
         <Text style={styles.buttonText}>60 Seconds</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, {backgroundColor: '#007aff'}]}
+        onPress={() => navigation.navigate('Stats')}
+      >
+        <Text style={styles.buttonText}>Stats</Text>
+      </TouchableOpacity>
+
       <BannerAd
         unitId={adUnitId}
         size={'320x100'}
