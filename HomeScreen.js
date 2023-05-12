@@ -41,14 +41,15 @@ export default function HomeScreen({ navigation, route }) {
         // when failed to load
         interstitial.addAdEventListener(AdEventType.ERROR, (error) => {
           console.log(error);
+          alert("Failed to load ad. Please try again later.");
           setLoading(false);
         });
 
 
 
         // Start loading the interstitial straight away
-        console.log(params)
         if(params?.fromResult) {
+        console.log('trying to load interstitial')
         interstitial.load();
         setLoading(true);
         }

@@ -42,18 +42,21 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#2d2d2d',
-    textAlign: 'center',
   },
   item: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    backgroundColor: '#fff',
+    padding: 10,
+    marginVertical: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
   },
   itemText: {
-    fontSize: 18,
-    color: '#2d2d2d',
+    fontSize: 16,
+    color: '#333',
+  },
+  flatList: {
+    paddingVertical: 10,
   },
 });
 
