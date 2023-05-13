@@ -8,6 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "devbuild": "eas build --platform ios --profile development-simulator",
+    "buildandroid": "eas build --platform android --profile production",
     "devserver": "npx expo start --dev-server"
   },
   "dependencies": {
