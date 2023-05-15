@@ -12,7 +12,7 @@ const interstitial = InterstitialAd.createForAdRequest(adUnitIdInterstitial, {
 });
 export default function HomeScreen({ navigation, route }) {
   const [loaded, setLoaded] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(0);
   const params = route.params;
   // useEffect(() => {
   //   if(route.params?.fromResult) {
@@ -40,19 +40,14 @@ export default function HomeScreen({ navigation, route }) {
         });
         // when failed to load
         interstitial.addAdEventListener(AdEventType.ERROR, (error) => {
-          console.log(error);
+          console.log(error, "error");
+          navigation.navigate('Game', {seconds: loading});
           setLoading(false);
         });
 
-
-
-        // Start loading the interstitial straight away
-        if(params?.fromResult) {
-        console.log('trying to load interstitial')
-        interstitial.load();
-        setLoading(true);
-        }
-
+        interstitial.addAdEventListener(AdEventType.CLICKED, () => {
+          setLoading(false);
+        });
 
         // Unsubscribe from events on unmount
         return unsubscribe2;
@@ -64,6 +59,8 @@ export default function HomeScreen({ navigation, route }) {
     if (loaded) {
       try {
         interstitial.show();
+        navigation.navigate('Game', {seconds: loading});
+
         setLoaded(false);
       } catch (error) {
         console.log(error);
@@ -77,25 +74,35 @@ if(loading) return (
   </View>
 )
 
+function navigateToGame(seconds) {
+  if(params?.fromResult) {
+  setLoading(seconds);
+
+    interstitial.load();
+  } else {
+    navigation.navigate('Game', {seconds: seconds});
+  }
+}
+
   return (
         <View style={styles.container}>
       <Text style={styles.title}>CPS Test</Text>
       <Text style={styles.subtitle}>How <Text style={{color: "red"}}>fast</Text> can you tap?</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('Game', { seconds: 1 })}
+        onPress={() => navigateToGame(1)}
       >
         <Text style={styles.buttonText}>1 Second</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.button, {backgroundColor: '#ff9500'}]}
-        onPress={() => navigation.navigate('Game', { seconds: 5 })}
+        onPress={() => navigateToGame(5)}
       >
         <Text style={styles.buttonText}>5 Seconds</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.button, {backgroundColor: '#ff3b30'}]}
-        onPress={() => navigation.navigate('Game', { seconds: 60 })}
+        onPress={() => navigateToGame(10)}
       >
         <Text style={styles.buttonText}>60 Seconds</Text>
       </TouchableOpacity>

@@ -13,15 +13,48 @@ const StatsScreen = () => {
     fetchHistory();
   }, []);
 
+  function msToTime(duration) {
+    const portions = [];
+      const msInDay = 1000 * 60 * 60 * 24;
+    const days = Math.trunc(duration / msInDay);
+    if (days > 0) {
+      portions.push(days + 'd');
+      duration = duration - (days * msInDay);
+    }
+
+    const msInHour = 1000 * 60 * 60;
+    const hours = Math.trunc(duration / msInHour);
+    if (hours > 0) {
+      portions.push(hours + 'h');
+      duration = duration - (hours * msInHour);
+    }
+
+    const msInMinute = 1000 * 60;
+    const minutes = Math.trunc(duration / msInMinute);
+    if (minutes > 0) {
+      portions.push(minutes + 'm');
+      duration = duration - (minutes * msInMinute);
+    }
+
+    const seconds = Math.trunc(duration / 1000);
+    if (seconds > 0) {
+      portions.push(seconds + 's');
+    }
+
+    return portions[0];
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Stats</Text>
       <FlatList
-        data={history}
+        data={history.reverse()}
         keyExtractor={(item) => item.when.toString()}
         renderItem={({ item }) => (
+
+
           <View style={styles.item}>
-            <Text style={styles.itemText}>Date: {new Date(item.when).toLocaleDateString()}</Text>
+            <Text style={styles.itemText}>Date: {new Date(item.when).toLocaleString('en-GB', { day: 'numeric', month: 'numeric', year: '2-digit', hour: 'numeric', minute: 'numeric', hour12: true }) + " (" + msToTime(Date.now() - item.when) + " ago)"}</Text>
             <Text style={styles.itemText}>Time: {item.seconds} seconds</Text>
             <Text style={styles.itemText}>Clicks: {item.clicks}</Text>
             <Text style={styles.itemText}>CPS: {item.cps.toFixed(2)}</Text>
