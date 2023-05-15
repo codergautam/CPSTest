@@ -27,34 +27,50 @@ export default function HomeScreen({ navigation, route }) {
   //   return unsubscribe;
   //   }
   // }, []);
-  useEffect(() => {
+    useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setLoaded(false);
-        // do something
-        const unsubscribe2 = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-          setLoaded(true);
-        });
-        // when interstitial is closed
+//if true indicates that the user is navigating and the adds need to be shown
+      if (params?.fromResult) {
+        setLoading(seconds);
+
+        // Load the interstitial ad
+        interstitial.load();
+
+        // Wait for the ad to load before navigating
+        const unsubscribe2 = interstitial.addAdEventListener(
+          AdEventType.LOADED,
+          () => {
+            // Ad loaded, navigate to the game screen
+            navigation.navigate('Game', { seconds: loading });
+
+            // Reset loaded state
+            setLoaded(false);
+
+            // Unsubscribe from the loaded event listener
+            unsubscribe2();
+          }
+        );
+
         interstitial.addAdEventListener(AdEventType.CLOSED, () => {
           setLoading(false);
         });
-        // when failed to load
+
         interstitial.addAdEventListener(AdEventType.ERROR, (error) => {
           console.log(error, "error");
-          navigation.navigate('Game', {seconds: loading});
+          navigation.navigate('Game', { seconds: loading });
           setLoading(false);
         });
 
         interstitial.addAdEventListener(AdEventType.CLICKED, () => {
           setLoading(false);
         });
-
-        // Unsubscribe from events on unmount
-        return unsubscribe2;
+      }
     });
-    return unsubscribe;
-}, [navigation]);
 
+    return unsubscribe;
+  }, [navigation]);
+  
   useEffect(() => {
     if (loaded) {
       try {
