@@ -13,16 +13,16 @@ export default function GameScreen({ route, navigation }) {
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    navigation.addListener('focus', () => {
         // do something
         setTaps(0);
         setTimeLeft(seconds);
+        console.log(seconds, "focus...");
         setGameStarted(false);
         setStartTime(Date.now());
         setHistory([]);
     });
-    return unsubscribe;
-}, [navigation]);
+  }, []);
 
   useEffect(() => {
     if (gameStarted) {

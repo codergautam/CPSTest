@@ -14,6 +14,28 @@ export default function HomeScreen({ navigation, route }) {
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(0);
   const params = route.params;
+
+  useEffect(() => {
+    console.log('adding a bunch of listeners this shuld only happen once')
+    interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      setLoaded(true);
+    });
+    // when interstitial is closed
+    interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      setLoading(false);
+    });
+    // when failed to load
+    interstitial.addAdEventListener(AdEventType.ERROR, (error) => {
+      console.log(error, "error", loading);
+      // just say its loaded so we advance to the game screen
+      setLoaded(true);
+    });
+
+    interstitial.addAdEventListener(AdEventType.CLICKED, () => {
+      setLoading(false);
+    });
+  }, []);
+
   // useEffect(() => {
   //   if(route.params?.fromResult) {
   //   const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
@@ -27,46 +49,33 @@ export default function HomeScreen({ navigation, route }) {
   //   return unsubscribe;
   //   }
   // }, []);
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      setLoaded(false);
-        // do something
-        const unsubscribe2 = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-          setLoaded(true);
-        });
-        // when interstitial is closed
-        interstitial.addAdEventListener(AdEventType.CLOSED, () => {
-          setLoading(false);
-        });
-        // when failed to load
-        interstitial.addAdEventListener(AdEventType.ERROR, (error) => {
-          console.log(error, "error");
-          navigation.navigate('Game', {seconds: loading});
-          setLoading(false);
-        });
 
-        interstitial.addAdEventListener(AdEventType.CLICKED, () => {
-          setLoading(false);
-        });
-
-        // Unsubscribe from events on unmount
-        return unsubscribe2;
-    });
-    return unsubscribe;
-}, [navigation]);
 
   useEffect(() => {
     if (loaded) {
       try {
+        try {
         interstitial.show();
-        navigation.navigate('Game', {seconds: loading});
+        } catch (error) {
+          console.log(error);
+        }
 
+        navigation.navigate('Game', {seconds: loading});
         setLoaded(false);
+
+        setLoading(0);
       } catch (error) {
         console.log(error);
       }
     }
   }, [loaded]);
+
+
+  useEffect(() => {
+    if(loading > 0) {
+    interstitial.load();
+    }
+  }, [loading]);
 
 if(loading) return (
   <View style={styles.container}>
@@ -78,7 +87,6 @@ function navigateToGame(seconds) {
   if(params?.fromResult) {
   setLoading(seconds);
 
-    interstitial.load();
   } else {
     navigation.navigate('Game', {seconds: seconds});
   }

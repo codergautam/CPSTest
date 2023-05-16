@@ -64,13 +64,13 @@ const handleSave = async () => {
 
 
 useEffect(() => {
-  const unsubscribe = navigation.addListener('focus', () => {
+  console.log('added result save listener')
+   navigation.addListener('focus', () => {
       handleSave().then((res) => {
         setHighScoreText(res);
       });
   });
-  return unsubscribe;
-}, [navigation]);
+}, []);
 
 return (
 <View style={container}>
