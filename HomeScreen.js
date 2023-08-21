@@ -12,7 +12,7 @@ const interstitial = InterstitialAd.createForAdRequest(adUnitIdInterstitial, {
 });
 export default function HomeScreen({ navigation, route }) {
   const [loaded, setLoaded] = useState(false);
-  const [loading, setLoading] = useState(0);
+  const [loading, setLoading] = useState([0, false]);
   const params = route.params;
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default function HomeScreen({ navigation, route }) {
     });
     // when interstitial is closed
     interstitial.addAdEventListener(AdEventType.CLOSED, () => {
-      setLoading(false);
+      setLoading([false, false]);
     });
     // when failed to load
     interstitial.addAdEventListener(AdEventType.ERROR, (error) => {
@@ -32,7 +32,7 @@ export default function HomeScreen({ navigation, route }) {
     });
 
     interstitial.addAdEventListener(AdEventType.CLICKED, () => {
-      setLoading(false);
+      setLoading([false, false]);
     });
   }, []);
 
@@ -60,10 +60,10 @@ export default function HomeScreen({ navigation, route }) {
           console.log(error);
         }
 
-        navigation.navigate('Game', {seconds: loading});
+        navigation.navigate(loading[1]?'DuoGame':'Game', {seconds: loading[0]});
         setLoaded(false);
 
-        setLoading(0);
+        setLoading([0, false]);
       } catch (error) {
         console.log(error);
       }
@@ -72,23 +72,23 @@ export default function HomeScreen({ navigation, route }) {
 
 
   useEffect(() => {
-    if(loading > 0) {
+    if(loading[0] > 0) {
     interstitial.load();
     }
   }, [loading]);
 
-if(loading) return (
+if(loading[0]) return (
   <View style={styles.container}>
   <Text style={{color: "black"}}>Loading...</Text>
   </View>
 )
 
-function navigateToGame(seconds) {
+function navigateToGame(seconds, dualPlayer = false) {
   if(params?.fromResult) {
-  setLoading(seconds);
+  setLoading([seconds, dualPlayer]);
 
   } else {
-    navigation.navigate('Game', {seconds: seconds});
+    navigation.navigate(dualPlayer?'DuoGame':'Game', {seconds: seconds});
   }
 }
 
@@ -110,9 +110,15 @@ function navigateToGame(seconds) {
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.button, {backgroundColor: '#ff3b30'}]}
-        onPress={() => navigateToGame(10)}
+        onPress={() => navigateToGame(60)}
       >
         <Text style={styles.buttonText}>60 Seconds</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.button, {backgroundColor: '#ff3b30'}]}
+        onPress={() => navigateToGame(10, true)}
+      >
+        <Text style={styles.buttonText}>Two Player (new)</Text>
       </TouchableOpacity>
 
       <TouchableOpacity

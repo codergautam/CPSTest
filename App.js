@@ -4,6 +4,7 @@ import HomeScreen from './HomeScreen';
 import GameScreen from './GameScreen';
 import ResultScreen from './ResultScreen';
 import StatsScreen from './StatsScreen';
+import DuoGameScreen from './DuoGameScreen';
 
 const Stack = createStackNavigator();
 
@@ -15,6 +16,7 @@ export default function App() {
         <Stack.Screen name="Game" component={GameScreen} />
         <Stack.Screen name="Result" component={ResultScreen} />
         <Stack.Screen name="Stats" component={StatsScreen} />
+        <Stack.Screen name="DuoGame" component={DuoGameScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

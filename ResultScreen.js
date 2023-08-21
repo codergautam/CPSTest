@@ -8,7 +8,7 @@ const adUnitId = Platform.OS == "android" ? "ca-app-pub-3340825671684972/8009602
 
 
 const ResultScreen =  ({ route, navigation }) => {
-const { cps, seconds, clicks, history } = route.params;
+const { cps, seconds, clicks, history, cpsPlayer1, cpsPlayer2 } = route.params;
 const [timeReached, setTimeReached] = useState(Date.now());
 const [highScoreText, setHighScoreText] = useState("");
 
@@ -65,11 +65,13 @@ const handleSave = async () => {
 
 useEffect(() => {
   console.log('added result save listener')
+  if(cps) {
    navigation.addListener('focus', () => {
       handleSave().then((res) => {
         setHighScoreText(res);
       });
   });
+}
 }, []);
 
 return (
@@ -79,12 +81,26 @@ return (
         size={'320x50'}
       />
 <Text style={title}>Results</Text>
+{ cps ? (
+  <>
 <Text style={resultText}>You clicked {clicks} times in {seconds} seconds!</Text>
 <Text style={resultText}>Your CPS: {cps.toFixed(2)}</Text>
 <Text style={resultText}>{highScoreText}</Text>
 
 <PureChart data={history} type='line' gap={(Dimensions.get('window').width - 120) / history.length} />
+</>
+) : (
+<>
+{ cpsPlayer1 != cpsPlayer2 ? (
+<Text style={resultText}>Winner: {cpsPlayer1 > cpsPlayer2 ? "Player 1" : "Player 2"}</Text>
+) : (
+<Text style={resultText}>It's a tie!</Text>
+)}
+<Text style={resultText}>Player 1 CPS: {cpsPlayer1.toFixed(2)}</Text>
+<Text style={resultText}>Player 2 CPS: {cpsPlayer2.toFixed(2)}</Text>
 
+</>
+)}
 <View style={buttonsContainer}>
 <TouchableOpacity
 style={[button, playAgainButton]}
